@@ -1,0 +1,9 @@
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/bin/Debug/netcoreapp3.1/Microcervices.RabbitMQ.deps.json
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/bin/Debug/netcoreapp3.1/Microcervices.RabbitMQ.dll
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/bin/Debug/netcoreapp3.1/Microcervices.RabbitMQ.pdb
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.csprojAssemblyReference.cache
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.AssemblyInfoInputs.cache
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.AssemblyInfo.cs
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.csproj.CoreCompileInputs.cache
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.dll
+/Users/kristina/net/solidexcrm/PhotoMSK/Services/Microcervices.RabbitMQ/obj/Debug/netcoreapp3.1/Microcervices.RabbitMQ.pdb
