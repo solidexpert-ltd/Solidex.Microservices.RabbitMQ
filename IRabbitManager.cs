@@ -1,7 +1,7 @@
 using System;
 using Solidex.Core.Base.Abstraction;
 
-namespace solidex.microcervices.rabbitMQ
+namespace Solidex.Microservices.RabbitMQ
 {
     public interface IRabbitManager
     {

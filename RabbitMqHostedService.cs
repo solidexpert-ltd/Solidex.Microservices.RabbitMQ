@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 
-namespace solidex.microcervices.rabbitMQ
+namespace Solidex.Microservices.RabbitMQ
 {
     public abstract class RabbitMqHostedService : BackgroundService
     {

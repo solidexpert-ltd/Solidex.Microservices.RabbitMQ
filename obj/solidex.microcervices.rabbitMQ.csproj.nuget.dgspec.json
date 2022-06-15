@@ -1,26 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kristina/net/solidex.microservice.rabbitMQ/solidex.microcervices.rabbitMQ.csproj": {}
+    "/Users/admin/Solidex.Microservices.RabbitMQ/solidex.microcervices.rabbitMQ.csproj": {}
   },
   "projects": {
-    "/Users/kristina/net/solidex.microservice.rabbitMQ/solidex.microcervices.rabbitMQ.csproj": {
+    "/Users/admin/Solidex.Microservices.RabbitMQ/solidex.microcervices.rabbitMQ.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kristina/net/solidex.microservice.rabbitMQ/solidex.microcervices.rabbitMQ.csproj",
+        "projectUniqueName": "/Users/admin/Solidex.Microservices.RabbitMQ/solidex.microcervices.rabbitMQ.csproj",
         "projectName": "solidex.microcervices.rabbitMQ",
-        "projectPath": "/Users/kristina/net/solidex.microservice.rabbitMQ/solidex.microcervices.rabbitMQ.csproj",
-        "packagesPath": "/Users/kristina/.nuget/packages/",
-        "outputPath": "/Users/kristina/net/solidex.microservice.rabbitMQ/obj/",
+        "projectPath": "/Users/admin/Solidex.Microservices.RabbitMQ/solidex.microcervices.rabbitMQ.csproj",
+        "packagesPath": "/Users/admin/.nuget/packages/",
+        "outputPath": "/Users/admin/Solidex.Microservices.RabbitMQ/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/kristina/.nuget/NuGet/NuGet.Config"
+          "/Users/admin/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.jetbrains.space/solidexpert/p/scrm/nuget/v3/index.json": {},
           "https://repo.solidexpert.ltd/repository/nuget-hosted/": {}
         },
         "frameworks": {
@@ -75,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.402/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.100-preview.2.22153.17/RuntimeIdentifierGraph.json"
         }
       }
     }

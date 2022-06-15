@@ -7,7 +7,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Solidex.Core.Base.Abstraction;
 
-namespace solidex.microcervices.rabbitMQ
+namespace Solidex.Microservices.RabbitMQ
 {
     public class RabbitManager : IRabbitManager
     {

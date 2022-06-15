@@ -2,7 +2,7 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
-namespace solidex.microcervices.rabbitMQ
+namespace Solidex.Microservices.RabbitMQ
 {
     public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IModel>
     {

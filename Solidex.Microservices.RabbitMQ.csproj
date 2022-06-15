@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <AssemblyName>solidex.microcervices.rabbitMQ</AssemblyName>
-        <RootNamespace>solidex.microcervices.rabbitMQ</RootNamespace>
-        <PackageId>solidex.microcervices.rabbitMQ</PackageId>
+        <PackageId>Solidex.Microservices.RabbitMQ</PackageId>
         <Authors>Solidexpert LTD</Authors>
         <Company>solidex.microcervices.rabbitMQ</Company>
         <Product>solidex.microcervices.rabbitMQ</Product>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <TargetFrameworks>net6.0;netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +14,7 @@
       <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.11" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="RabbitMQ.Client" Version="6.2.0-rc.1" />
-      <PackageReference Include="Solidex.Core.Base" Version="1.0.35" />
+      <PackageReference Include="Solidex.Core.Base" Version="1.0.36" />
     </ItemGroup>
 
 </Project>

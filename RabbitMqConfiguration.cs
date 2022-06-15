@@ -1,7 +1,7 @@
 using System;
 
 
-namespace solidex.microcervices.rabbitMQ
+namespace Solidex.Microservices.RabbitMQ
 {
     public class RabbitMqConfiguration
     {
