@@ -424,7 +424,7 @@
           "lib/netstandard2.0/RabbitMQ.Client.dll": {}
         }
       },
-      "Solidex.Core.Base/1.0.36": {
+      "Solidex.Core.Base/1.0.37": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/Solidex.Core.Base.dll": {}
@@ -948,7 +948,7 @@
           "lib/netstandard2.0/RabbitMQ.Client.dll": {}
         }
       },
-      "Solidex.Core.Base/1.0.36": {
+      "Solidex.Core.Base/1.0.37": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/Solidex.Core.Base.dll": {}
@@ -1689,14 +1689,14 @@
         "rabbitmq.client.nuspec"
       ]
     },
-    "Solidex.Core.Base/1.0.36": {
-      "sha512": "Y04fBTbg1Sk1gmWnSmiXBrux+iqx702OdEFUR4PxldsaHMMj9XZEEtHfNcugjrN+s0heK2r4TCRulePG7p2ZEg==",
+    "Solidex.Core.Base/1.0.37": {
+      "sha512": "5blyzsK5HKNy+c8qre8E89n9ge0Qg389hOTKwobNdtL0c/WYgxfyVOmx930OoUiOimoVmT2ezj1vww0s3ReiBg==",
       "type": "package",
-      "path": "solidex.core.base/1.0.36",
+      "path": "solidex.core.base/1.0.37",
       "files": [
         ".nupkg.metadata",
         "lib/netcoreapp3.1/Solidex.Core.Base.dll",
-        "solidex.core.base.1.0.36.nupkg.sha512",
+        "solidex.core.base.1.0.37.nupkg.sha512",
         "solidex.core.base.nuspec"
       ]
     },
@@ -1932,14 +1932,14 @@
       "Microsoft.Extensions.ObjectPool >= 5.0.11",
       "Newtonsoft.Json >= 12.0.3",
       "RabbitMQ.Client >= 6.2.0-rc.1",
-      "Solidex.Core.Base >= 1.0.36"
+      "Solidex.Core.Base >= 1.0.37"
     ],
     "net6.0": [
       "Microsoft.Extensions.Hosting >= 5.0.0",
       "Microsoft.Extensions.ObjectPool >= 5.0.11",
       "Newtonsoft.Json >= 12.0.3",
       "RabbitMQ.Client >= 6.2.0-rc.1",
-      "Solidex.Core.Base >= 1.0.36"
+      "Solidex.Core.Base >= 1.0.37"
     ]
   },
   "packageFolders": {
@@ -2005,7 +2005,7 @@
           },
           "Solidex.Core.Base": {
             "target": "Package",
-            "version": "[1.0.36, )"
+            "version": "[1.0.37, )"
           }
         },
         "imports": [
@@ -2046,7 +2046,7 @@
           },
           "Solidex.Core.Base": {
             "target": "Package",
-            "version": "[1.0.36, )"
+            "version": "[1.0.37, )"
           }
         },
         "imports": [

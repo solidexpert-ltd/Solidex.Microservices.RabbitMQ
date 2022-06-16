@@ -14,7 +14,7 @@
       <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.11" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="RabbitMQ.Client" Version="6.2.0-rc.1" />
-      <PackageReference Include="Solidex.Core.Base" Version="1.0.36" />
+      <PackageReference Include="Solidex.Core.Base" Version="1.0.37" />
     </ItemGroup>
 
 </Project>

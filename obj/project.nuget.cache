@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "dRdFwATuVJOzsIZmTaFXw92jbqDIHuHJVzUaZYA/CV2XGj6oDkoqvtg60z17OrwoFymjmBuM7rneZBVEPJ/AUA==",
+  "dgSpecHash": "+4K/OezxLOZOhmHEs/ul2DxEWK9rQav5xAwAszRErNOCjpgrXGQv2IjBHdG+g8HxJMM/ZDgGac7WrARc+RT6dA==",
   "success": true,
   "projectFilePath": "/Users/admin/Solidex.Microservices.RabbitMQ/Solidex.Microservices.RabbitMQ.csproj",
   "expectedPackageFiles": [
@@ -34,7 +34,7 @@
     "/Users/admin/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
     "/Users/admin/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512",
     "/Users/admin/.nuget/packages/rabbitmq.client/6.2.0-rc.1/rabbitmq.client.6.2.0-rc.1.nupkg.sha512",
-    "/Users/admin/.nuget/packages/solidex.core.base/1.0.36/solidex.core.base.1.0.36.nupkg.sha512",
+    "/Users/admin/.nuget/packages/solidex.core.base/1.0.37/solidex.core.base.1.0.37.nupkg.sha512",
     "/Users/admin/.nuget/packages/system.diagnostics.diagnosticsource/5.0.0/system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512",
     "/Users/admin/.nuget/packages/system.diagnostics.eventlog/5.0.0/system.diagnostics.eventlog.5.0.0.nupkg.sha512",
     "/Users/admin/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
