@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.ObjectPool;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Solidex.Core.Base.Abstraction;
+using Solidex.Microservices.RabbitMQ.Attributes;
 
 namespace Solidex.Microservices.RabbitMQ
 {
@@ -35,6 +38,7 @@ namespace Solidex.Microservices.RabbitMQ
 
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
+                properties.Type = nameof(T);
 
                 channel.BasicPublish(exchangeName, routeKey, properties, sendBytes);
             }
@@ -70,6 +74,66 @@ namespace Solidex.Microservices.RabbitMQ
             channel.BasicConsume(queueName, false, consumer);
 
             return respQueue.Take();
+        }
+
+        public void Send<T>(T message) where T : class
+        {
+            if (message == null)
+                return;
+
+            var channel = _objectPool.Get();
+
+            var attribute = typeof(T).GetCustomAttributes(typeof(RabbitQueryAttribute)).FirstOrDefault() as RabbitQueryAttribute;
+
+            if (attribute is null)
+                throw new Exception($"The {nameof(RabbitQueryAttribute)} attribute is not exist");
+
+            try
+            {
+                channel.ExchangeDeclare(attribute.ExchangeName, attribute.ExchangeType, true, false, null);
+
+                var sendBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+
+                channel.BasicPublish(attribute.ExchangeName, attribute.RouteKey, properties, sendBytes);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                _objectPool.Return(channel);
+            }
+        }
+
+        public void Consume<T, TE>(Func<T, TE> lambda)
+        { 
+            var attribute = typeof(T).GetCustomAttributes(typeof(RabbitQueryAttribute)).FirstOrDefault() as RabbitQueryAttribute;
+
+            if (attribute is null)
+                throw new Exception($"The {nameof(RabbitQueryAttribute)} attribute is not exist");
+            
+            var channel = _objectPool.Get();
+            channel.QueueDeclare(Assembly.GetExecutingAssembly().FullName + nameof(T), true, false, false, null);
+
+            var consumer = new EventingBasicConsumer(channel);
+            
+            consumer.Received += async (ch, ea) =>
+            {
+                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                try
+                {
+                    var message = JsonConvert.DeserializeObject<T>(content);
+                    var res = lambda.Invoke(message);
+                }
+                finally
+                {
+                    channel.BasicAck(ea.DeliveryTag, false);
+                }
+            };
         }
     }
 }

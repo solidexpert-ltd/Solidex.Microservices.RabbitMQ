@@ -9,5 +9,7 @@ namespace Solidex.Microservices.RabbitMQ
             where T : class;
 
         T Subscribe<T>(string queueName, Guid id) where T : IEntity;
+
+        void Send<T>(T message) where T : class;
     }
 }
