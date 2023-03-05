@@ -38,7 +38,7 @@ namespace Solidex.Microservices.RabbitMQ
 
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
-                properties.Type = nameof(T);
+                properties.Type = message.GetType().Name;
 
                 channel.BasicPublish(exchangeName, routeKey, properties, sendBytes);
             }
