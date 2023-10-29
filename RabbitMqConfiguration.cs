@@ -1,6 +1,3 @@
-using System;
-
-
 namespace Solidex.Microservices.RabbitMQ
 {
     public class RabbitMqConfiguration

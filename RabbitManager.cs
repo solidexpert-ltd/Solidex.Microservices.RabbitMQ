@@ -99,10 +99,6 @@ namespace Solidex.Microservices.RabbitMQ
 
                 channel.BasicPublish(attribute.ExchangeName, attribute.RouteKey, properties, sendBytes);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
             finally
             {
                 _objectPool.Return(channel);
