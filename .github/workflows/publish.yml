@@ -19,14 +19,14 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # PAT with read:packages + write:packages (repo Settings → Secrets → GH_PACKAGES_TOKEN).
-      # Required to restore Solidex.Core.Base from GitHub Packages and to push this package.
+      # Use GH_PACKAGES_TOKEN (PAT with read:packages, write:packages) or fall back to GITHUB_TOKEN.
+      # PAT required to restore Solidex.Core.Base from GitHub Packages (cross-repo). Set in repo Secrets.
       - name: Add GitHub Packages NuGet source
         env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$GH_PACKAGES_TOKEN" ]; then
-            echo "::error::Add a repo secret GH_PACKAGES_TOKEN (PAT with read:packages, write:packages)"
+            echo "::error::No token. Add repo secret GH_PACKAGES_TOKEN (PAT with read:packages, write:packages)."
             exit 1
           fi
           dotnet nuget add source \
