@@ -6,7 +6,7 @@
         <Company>solidex.microcervices.rabbitMQ</Company>
         <Product>solidex.microcervices.rabbitMQ</Product>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
