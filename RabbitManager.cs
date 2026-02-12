@@ -62,7 +62,7 @@ namespace Solidex.Microservices.RabbitMQ
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (ch, ea) =>
             {
-                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var content = Encoding.UTF8.GetString(ea.Body.Span);
 
                 var message = JsonConvert.DeserializeObject<T>(content);
                 channel.BasicAck(ea.DeliveryTag, false);
@@ -119,7 +119,7 @@ namespace Solidex.Microservices.RabbitMQ
             
             consumer.Received += async (ch, ea) =>
             {
-                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var content = Encoding.UTF8.GetString(ea.Body.Span);
                 try
                 {
                     var message = JsonConvert.DeserializeObject<T>(content);

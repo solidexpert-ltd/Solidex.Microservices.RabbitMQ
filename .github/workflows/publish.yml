@@ -1,0 +1,41 @@
+name: Build and Publish to GitHub Packages
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Pack
+        run: dotnet pack -p:PackageVersion=1.0.${{ github.run_number }} -o ./ -c Release --no-build
+
+      - name: Add GitHub Packages source
+        run: |
+          dotnet nuget add source \
+            --username ${{ github.repository_owner }} \
+            --password "${{ secrets.GITHUB_TOKEN }}" \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push "Solidex.Microservices.RabbitMQ.1.0.${{ github.run_number }}.nupkg" --source github

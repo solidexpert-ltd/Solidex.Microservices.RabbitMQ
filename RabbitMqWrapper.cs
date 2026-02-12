@@ -48,7 +48,7 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (_, ea) =>
             {
-                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var content = Encoding.UTF8.GetString(ea.Body.Span);
                 try
                 {
                     using var scope = _serviceProvider.CreateScope();

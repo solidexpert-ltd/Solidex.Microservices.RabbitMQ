@@ -6,15 +6,15 @@
         <Company>solidex.microcervices.rabbitMQ</Company>
         <Product>solidex.microcervices.rabbitMQ</Product>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <TargetFrameworks>net6.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.11"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.3"/>
         <PackageReference Include="Newtonsoft.Json" Version="[10.0.0,13.0.3]"/>
         <PackageReference Include="MediatR" Version="[10.0.0,13.0.0]"/>
-        <PackageReference Include="RabbitMQ.Client" Version="6.2.0-rc.1"/>
+        <PackageReference Include="RabbitMQ.Client" Version="6.8.1"/>
         <PackageReference Include="Solidex.Core.Base" Version="1.0.37"/>
     </ItemGroup>
 
