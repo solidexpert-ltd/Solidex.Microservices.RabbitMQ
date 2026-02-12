@@ -35,13 +35,6 @@ jobs:
             --store-password-in-clear-text \
             --name github \
             "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        run: |
-          dotnet nuget add source \
-            --username ${{ github.repository_owner }} \
-            --password "${{ secrets.GH_PACKAGES_TOKEN }}" \
-            --store-password-in-clear-text \
-            --name github \
-            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Restore
         run: dotnet restore
