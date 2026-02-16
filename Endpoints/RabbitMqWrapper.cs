@@ -8,10 +8,12 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Solidex.Microservices.RabbitMQ;
 
-namespace Solidex.Telegram.RabbitMQEndpointBinder
+namespace Solidex.Microservices.RabbitMQ.Endpoints
 {
+    /// <summary>
+    /// RabbitMQ consumer wrapper that dispatches messages to MediatR.
+    /// </summary>
     public class RabbitMqWrapper<T> : IBus
     {
         private readonly IChannel _channel;
@@ -19,25 +21,35 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
         private readonly string _queue;
         private readonly IServiceProvider _serviceProvider;
 
-        public RabbitMqWrapper(IOptions<RabbitMqConfiguration> options,
-            EndpointConfiguration<T> configuration, IServiceProvider services)
+        public RabbitMqWrapper(
+            IOptions<RabbitMqConfiguration> options,
+            EndpointConfiguration<T> configuration,
+            IServiceProvider services)
         {
             _serviceProvider = services;
+            var opts = options.Value;
             var factory = new ConnectionFactory
             {
-                HostName = options.Value.Hostname,
-                UserName = options.Value.UserName,
-                Password = options.Value.Password,
-                Port = AmqpTcpEndpoint.UseDefaultPort,
-                VirtualHost = options.Value.VHost
+                HostName = opts.Hostname,
+                UserName = opts.UserName,
+                Password = opts.Password,
+                Port = opts.Port > 0 ? opts.Port : AmqpTcpEndpoint.UseDefaultPort,
+                VirtualHost = string.IsNullOrEmpty(opts.VHost) ? "/" : opts.VHost
             };
 
             _connection = factory.CreateConnectionAsync(CancellationToken.None).GetAwaiter().GetResult();
             _channel = _connection.CreateChannelAsync(null, CancellationToken.None).GetAwaiter().GetResult();
             _queue = configuration.Queue;
             _channel.QueueDeclareAsync(_queue, configuration.Durable, configuration.Exclusive,
-                configuration.AutoDelete, configuration.Arguments, false, false, CancellationToken.None).GetAwaiter().GetResult();
-            _channel.QueueBindAsync(configuration.Queue, configuration.Exchange, configuration.RoutingKey, null, false, CancellationToken.None).GetAwaiter().GetResult();
+                    configuration.AutoDelete, configuration.Arguments, false, false, CancellationToken.None)
+                .GetAwaiter().GetResult();
+            if (!string.IsNullOrEmpty(configuration.Exchange))
+            {
+                _channel.ExchangeDeclareAsync(configuration.Exchange, "direct", true, false, null, false, false, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+                _channel.QueueBindAsync(configuration.Queue, configuration.Exchange, configuration.RoutingKey, null, false, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+            }
         }
 
         public Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,11 +62,10 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
                 {
                     using var scope = _serviceProvider.CreateScope();
 
-                    var mediator =
-                        scope.ServiceProvider
-                            .GetRequiredService<IMediator>();
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
                     var message = JsonConvert.DeserializeObject<T>(content);
+                    
                     if (message != null)
                         await mediator.Send(message, stoppingToken);
                 }
@@ -64,7 +75,8 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
                 }
             };
 
-            _channel.BasicConsumeAsync(_queue, false, string.Empty, false, false, null, consumer, CancellationToken.None).GetAwaiter().GetResult();
+            _channel.BasicConsumeAsync(_queue, false, string.Empty, false, false, null, consumer, CancellationToken.None)
+                .GetAwaiter().GetResult();
             return Task.CompletedTask;
         }
 

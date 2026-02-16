@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace Solidex.Microservices.RabbitMQ
+namespace Solidex.Microservices.RabbitMQ.Hosting
 {
-    public class RabbitMQHostedService : BackgroundService
+    /// <summary>
+    /// Hosted service that runs all registered RabbitMQ endpoint consumers.
+    /// </summary>
+    public class RabbitMqHostedService : BackgroundService
     {
-        readonly IList<IBus> _wrappers;
+        private readonly IList<IBus> _wrappers;
 
-        public RabbitMQHostedService(
+        public RabbitMqHostedService(
             IServiceProvider services,
             IOptions<RabbitMqConfiguration> options,
             IEndpointsConfiguration configuration)

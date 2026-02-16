@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <ItemGroup>
+        <Compile Remove="tests\**" />
+        <None Remove="tests\**" />
+    </ItemGroup>
     <PropertyGroup>
         <PackageId>Solidex.Microservices.RabbitMQ</PackageId>
         <Authors>Solidexpert LTD</Authors>

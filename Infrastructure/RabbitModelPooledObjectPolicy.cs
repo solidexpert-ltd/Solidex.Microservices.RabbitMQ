@@ -3,12 +3,14 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
-namespace Solidex.Microservices.RabbitMQ
+namespace Solidex.Microservices.RabbitMQ.Infrastructure
 {
+    /// <summary>
+    /// Object pool policy for RabbitMQ channels (IChannel).
+    /// </summary>
     public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IChannel>
     {
         private readonly RabbitMqConfiguration _options;
-
         private readonly IConnection _connection;
 
         public RabbitModelPooledObjectPolicy(IOptions<RabbitMqConfiguration> optionsAccs)
@@ -19,13 +21,13 @@ namespace Solidex.Microservices.RabbitMQ
 
         private IConnection GetConnection()
         {
-            var factory = new ConnectionFactory()
+            var factory = new ConnectionFactory
             {
                 HostName = _options.Hostname,
                 UserName = _options.UserName,
                 Password = _options.Password,
-                Port = AmqpTcpEndpoint.UseDefaultPort,
-                VirtualHost = _options.VHost
+                Port = _options.Port > 0 ? _options.Port : AmqpTcpEndpoint.UseDefaultPort,
+                VirtualHost = string.IsNullOrEmpty(_options.VHost) ? "/" : _options.VHost
             };
 
             return factory.CreateConnectionAsync(CancellationToken.None).GetAwaiter().GetResult();
@@ -39,14 +41,10 @@ namespace Solidex.Microservices.RabbitMQ
         public bool Return(IChannel obj)
         {
             if (obj.IsOpen)
-            {
                 return true;
-            }
-            else
-            {
-                obj?.Dispose();
-                return false;
-            }
+
+            obj?.Dispose();
+            return false;
         }
     }
 }
