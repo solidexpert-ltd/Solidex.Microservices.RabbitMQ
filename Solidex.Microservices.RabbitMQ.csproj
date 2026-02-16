@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <ItemGroup>
+        <Compile Remove="tests\**" />
+        <None Remove="tests\**" />
+    </ItemGroup>
     <PropertyGroup>
         <PackageId>Solidex.Microservices.RabbitMQ</PackageId>
         <Authors>Solidexpert LTD</Authors>
@@ -13,8 +17,8 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3"/>
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.3"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="MediatR" Version="[10.0.0,13.0.0]"/>
-        <PackageReference Include="RabbitMQ.Client" Version="6.8.1"/>
+        <PackageReference Include="MediatR" Version="14.0.0"/>
+        <PackageReference Include="RabbitMQ.Client" Version="7.2.0"/>
         <PackageReference Include="Solidex.Core.Base" Version="1.1.9"/>
     </ItemGroup>
 

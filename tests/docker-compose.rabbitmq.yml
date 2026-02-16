@@ -1,0 +1,17 @@
+# Optional: start RabbitMQ for manual testing or for running tests
+# without Testcontainers (you would need to point tests at this instance).
+# The integration tests use Testcontainers by default and start their own container.
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5

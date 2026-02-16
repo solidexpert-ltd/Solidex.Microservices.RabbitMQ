@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11408.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solidex.Microservices.RabbitMQ", "Solidex.Microservices.RabbitMQ.csproj", "{493AB34C-CA07-D526-8FC7-F99540063DE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solidex.Microservices.RabbitMQ.IntegrationTests", "tests\Solidex.Microservices.RabbitMQ.IntegrationTests\Solidex.Microservices.RabbitMQ.IntegrationTests.csproj", "{CEC9FA6F-28A3-1B57-0509-A82712A31957}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{493AB34C-CA07-D526-8FC7-F99540063DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{493AB34C-CA07-D526-8FC7-F99540063DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{493AB34C-CA07-D526-8FC7-F99540063DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{493AB34C-CA07-D526-8FC7-F99540063DE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEC9FA6F-28A3-1B57-0509-A82712A31957}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEC9FA6F-28A3-1B57-0509-A82712A31957}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEC9FA6F-28A3-1B57-0509-A82712A31957}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC9FA6F-28A3-1B57-0509-A82712A31957}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14D4A053-9162-4A46-AB42-B019A25C2E73}
+	EndGlobalSection
+EndGlobal
