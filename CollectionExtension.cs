@@ -13,7 +13,7 @@ namespace Solidex.Microservices.RabbitMQ
             services.Configure<RabbitMqConfiguration>(configuration.GetSection("RabbitMQ"));
 
             services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
+            services.AddSingleton<IPooledObjectPolicy<IChannel>, RabbitModelPooledObjectPolicy>();
 
             services.AddSingleton<IRabbitManager, RabbitManager>();
 

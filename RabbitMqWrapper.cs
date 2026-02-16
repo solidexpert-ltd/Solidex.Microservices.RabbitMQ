@@ -14,11 +14,10 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
 {
     public class RabbitMqWrapper<T> : IBus
     {
-        private readonly IModel _channel;
+        private readonly IChannel _channel;
         private readonly IConnection _connection;
         private readonly string _queue;
         private readonly IServiceProvider _serviceProvider;
-
 
         public RabbitMqWrapper(IOptions<RabbitMqConfiguration> options,
             EndpointConfiguration<T> configuration, IServiceProvider services)
@@ -33,20 +32,18 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
                 VirtualHost = options.Value.VHost
             };
 
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _connection = factory.CreateConnectionAsync(CancellationToken.None).GetAwaiter().GetResult();
+            _channel = _connection.CreateChannelAsync(null, CancellationToken.None).GetAwaiter().GetResult();
             _queue = configuration.Queue;
-            _channel.QueueDeclare(queue: _queue, durable: configuration.Durable, exclusive: configuration.Exclusive,
-                autoDelete: configuration.AutoDelete,
-                arguments: configuration.Arguments);
-            _channel.QueueBind(configuration.Queue, configuration.Exchange, configuration.RoutingKey);
+            _channel.QueueDeclareAsync(_queue, configuration.Durable, configuration.Exclusive,
+                configuration.AutoDelete, configuration.Arguments, false, false, CancellationToken.None).GetAwaiter().GetResult();
+            _channel.QueueBindAsync(configuration.Queue, configuration.Exchange, configuration.RoutingKey, null, false, CancellationToken.None).GetAwaiter().GetResult();
         }
-
 
         public Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (_, ea) =>
+            var consumer = new AsyncEventingBasicConsumer(_channel);
+            consumer.ReceivedAsync += async (_, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.Span);
                 try
@@ -58,22 +55,23 @@ namespace Solidex.Telegram.RabbitMQEndpointBinder
                             .GetRequiredService<IMediator>();
 
                     var message = JsonConvert.DeserializeObject<T>(content);
-                    await mediator.Send(message, stoppingToken);
+                    if (message != null)
+                        await mediator.Send(message, stoppingToken);
                 }
                 finally
                 {
-                    _channel.BasicAck(ea.DeliveryTag, false);
+                    await _channel.BasicAckAsync(ea.DeliveryTag, false, CancellationToken.None);
                 }
             };
 
-            _channel.BasicConsume(this._queue, false, consumer);
+            _channel.BasicConsumeAsync(_queue, false, string.Empty, false, false, null, consumer, CancellationToken.None).GetAwaiter().GetResult();
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel.CloseAsync(200, "Connection closed", false, CancellationToken.None).GetAwaiter().GetResult();
+            _connection.Dispose();
         }
     }
 }

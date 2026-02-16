@@ -1,10 +1,11 @@
+using System.Threading;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace Solidex.Microservices.RabbitMQ
 {
-    public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IModel>
+    public class RabbitModelPooledObjectPolicy : IPooledObjectPolicy<IChannel>
     {
         private readonly RabbitMqConfiguration _options;
 
@@ -27,15 +28,15 @@ namespace Solidex.Microservices.RabbitMQ
                 VirtualHost = _options.VHost
             };
 
-            return factory.CreateConnection();
+            return factory.CreateConnectionAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public IModel Create()
+        public IChannel Create()
         {
-            return _connection.CreateModel();
+            return _connection.CreateChannelAsync(null, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public bool Return(IModel obj)
+        public bool Return(IChannel obj)
         {
             if (obj.IsOpen)
             {

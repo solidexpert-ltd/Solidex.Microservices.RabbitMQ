@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using Microsoft.Extensions.ObjectPool;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -12,15 +13,9 @@ using Solidex.Microservices.RabbitMQ.Attributes;
 
 namespace Solidex.Microservices.RabbitMQ
 {
-    public class RabbitManager : IRabbitManager
+    public class RabbitManager(IPooledObjectPolicy<IChannel> objectPolicy) : IRabbitManager
     {
-        private readonly DefaultObjectPool<IModel> _objectPool;
-
-
-        public RabbitManager(IPooledObjectPolicy<IModel> objectPolicy)
-        {
-            _objectPool = new DefaultObjectPool<IModel>(objectPolicy, Environment.ProcessorCount * 2);
-        }
+        private readonly DefaultObjectPool<IChannel> _objectPool = new(objectPolicy, Environment.ProcessorCount * 2);
 
         public void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey)
             where T : class
@@ -32,19 +27,17 @@ namespace Solidex.Microservices.RabbitMQ
 
             try
             {
-                channel.ExchangeDeclare(exchangeName, exchangeType, true, false, null);
+                channel.ExchangeDeclareAsync(exchangeName, exchangeType, true, false, null, false, false, CancellationToken.None).GetAwaiter().GetResult();
 
                 var sendBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-                properties.Type = message.GetType().Name;
+                var properties = new BasicProperties
+                {
+                    Persistent = true,
+                    Type = message.GetType().Name
+                };
 
-                channel.BasicPublish(exchangeName, routeKey, properties, sendBytes);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                channel.BasicPublishAsync(exchangeName, routeKey, false, properties, sendBytes, CancellationToken.None).GetAwaiter().GetResult();
             }
             finally
             {
@@ -57,21 +50,21 @@ namespace Solidex.Microservices.RabbitMQ
             var respQueue = new BlockingCollection<T>();
 
             var channel = _objectPool.Get();
-            channel.QueueDeclare(queueName, true, false, false, null);
+            channel.QueueDeclareAsync(queueName, true, false, false, null, false, false, CancellationToken.None).GetAwaiter().GetResult();
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (ch, ea) =>
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (ch, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.Span);
-
                 var message = JsonConvert.DeserializeObject<T>(content);
-                channel.BasicAck(ea.DeliveryTag, false);
-                if (message.Id != id) return;
-                respQueue.Add(message);
+                await channel.BasicAckAsync(ea.DeliveryTag, false, CancellationToken.None);
+                if (message != null && message.Id != id) return;
+                if (message != null) respQueue.Add(message);
                 respQueue.CompleteAdding();
+                await System.Threading.Tasks.Task.CompletedTask;
             };
 
-            channel.BasicConsume(queueName, false, consumer);
+            channel.BasicConsumeAsync(queueName, false, string.Empty, false, false, null, consumer, CancellationToken.None).GetAwaiter().GetResult();
 
             return respQueue.Take();
         }
@@ -90,14 +83,13 @@ namespace Solidex.Microservices.RabbitMQ
 
             try
             {
-                channel.ExchangeDeclare(attribute.ExchangeName, attribute.ExchangeType, true, false, null);
+                channel.ExchangeDeclareAsync(attribute.ExchangeName, attribute.ExchangeType, true, false, null, false, false, CancellationToken.None).GetAwaiter().GetResult();
 
                 var sendBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
+                var properties = new BasicProperties { Persistent = true };
 
-                channel.BasicPublish(attribute.ExchangeName, attribute.RouteKey, properties, sendBytes);
+                channel.BasicPublishAsync(attribute.ExchangeName, attribute.RouteKey, false, properties, sendBytes, CancellationToken.None).GetAwaiter().GetResult();
             }
             finally
             {
@@ -106,30 +98,32 @@ namespace Solidex.Microservices.RabbitMQ
         }
 
         public void Consume<T, TE>(Func<T, TE> lambda)
-        { 
+        {
             var attribute = typeof(T).GetCustomAttributes(typeof(RabbitQueryAttribute)).FirstOrDefault() as RabbitQueryAttribute;
 
             if (attribute is null)
                 throw new Exception($"The {nameof(RabbitQueryAttribute)} attribute is not exist");
-            
-            var channel = _objectPool.Get();
-            channel.QueueDeclare(Assembly.GetExecutingAssembly().FullName + nameof(T), true, false, false, null);
 
-            var consumer = new EventingBasicConsumer(channel);
-            
-            consumer.Received += async (ch, ea) =>
+            var channel = _objectPool.Get();
+            channel.QueueDeclareAsync(Assembly.GetExecutingAssembly().FullName + nameof(T), true, false, false, null, false, false, CancellationToken.None).GetAwaiter().GetResult();
+
+            var consumer = new AsyncEventingBasicConsumer(channel);
+
+            consumer.ReceivedAsync += async (ch, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.Span);
                 try
                 {
                     var message = JsonConvert.DeserializeObject<T>(content);
-                    var res = lambda.Invoke(message);
+                    if (message != null) lambda.Invoke(message);
                 }
                 finally
                 {
-                    channel.BasicAck(ea.DeliveryTag, false);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false, CancellationToken.None);
                 }
             };
+
+            channel.BasicConsumeAsync(Assembly.GetExecutingAssembly().FullName + nameof(T), false, string.Empty, false, false, null, consumer, CancellationToken.None).GetAwaiter().GetResult();
         }
     }
 }
