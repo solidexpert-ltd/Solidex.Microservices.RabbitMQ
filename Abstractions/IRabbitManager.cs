@@ -18,6 +18,11 @@ namespace Solidex.Microservices.RabbitMQ
         Task Publish<T>(T message, CancellationToken ct = default) where T : class;
 
         /// <summary>
+        /// Fire-and-forget: publish to the given exchange with the given type and route key (synchronous).
+        /// </summary>
+        void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey) where T : class;
+
+        /// <summary>
         /// RPC: send request using [RabbitMessage] on TRequest, wait for TResponse.
         /// </summary>
         Task<TResponse> Send<TRequest, TResponse>(TRequest message, CancellationToken ct = default)

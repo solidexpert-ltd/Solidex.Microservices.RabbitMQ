@@ -8,15 +8,17 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Solidex.Microservices.RabbitMQ.Endpoints
 {
     /// <summary>
     /// RabbitMQ consumer wrapper that dispatches messages to MediatR.
+    /// Exchanges and queues are declared automatically if they do not exist.
     /// </summary>
     public class RabbitMqWrapper<T> : IBus
     {
-        private readonly IChannel _channel;
+        private IChannel _channel;
         private readonly IConnection _connection;
         private readonly string _queue;
         private readonly IServiceProvider _serviceProvider;
@@ -45,7 +47,33 @@ namespace Solidex.Microservices.RabbitMQ.Endpoints
                 .GetAwaiter().GetResult();
             if (!string.IsNullOrEmpty(configuration.Exchange))
             {
-                _channel.ExchangeDeclareAsync(configuration.Exchange, "direct", true, false, null, false, false, CancellationToken.None)
+                EnsureExchangeAndBinding(configuration);
+            }
+        }
+
+        private void EnsureExchangeAndBinding(EndpointConfiguration<T> configuration)
+        {
+            var exchangeType = string.IsNullOrEmpty(configuration.ExchangeType) ? "direct" : configuration.ExchangeType;
+            try
+            {
+                _channel.ExchangeDeclareAsync(configuration.Exchange, exchangeType, true, false, null, false, false, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+                _channel.QueueBindAsync(configuration.Queue, configuration.Exchange, configuration.RoutingKey, null, false, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+            }
+            catch (OperationInterruptedException ex) when (ex.ShutdownReason?.ReplyCode == 404)
+            {
+                // Exchange or queue not found - channel is now invalid; create new channel and declare exchange then bind
+                try
+                {
+                    _channel.CloseAsync(200, "Recovering after NOT_FOUND", false, CancellationToken.None).GetAwaiter().GetResult();
+                }
+                catch
+                {
+                    /* channel already closed */
+                }
+                _channel = _connection.CreateChannelAsync(null, CancellationToken.None).GetAwaiter().GetResult();
+                _channel.ExchangeDeclareAsync(configuration.Exchange, exchangeType, true, false, null, false, false, CancellationToken.None)
                     .GetAwaiter().GetResult();
                 _channel.QueueBindAsync(configuration.Queue, configuration.Exchange, configuration.RoutingKey, null, false, CancellationToken.None)
                     .GetAwaiter().GetResult();

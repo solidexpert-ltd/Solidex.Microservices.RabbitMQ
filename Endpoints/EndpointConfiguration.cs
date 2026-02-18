@@ -16,12 +16,20 @@ namespace Solidex.Microservices.RabbitMQ
         public IDictionary<string, object> Arguments { get; set; }
 
         public string Exchange { get; set; } = string.Empty;
+        /// <summary>Exchange type: "direct", "topic", "fanout", etc. Default is "direct".</summary>
+        public string ExchangeType { get; set; } = "direct";
         public string RoutingKey { get; set; } = string.Empty;
 
         public void WithBinding(string exchange, string routingKey)
         {
+            WithBinding(exchange, routingKey, "direct");
+        }
+
+        public void WithBinding(string exchange, string routingKey, string exchangeType)
+        {
             Exchange = exchange;
             RoutingKey = routingKey;
+            ExchangeType = string.IsNullOrEmpty(exchangeType) ? "direct" : exchangeType;
         }
 
         public IBus BuildWrapper(IServiceProvider services, IOptions<RabbitMqConfiguration> options)

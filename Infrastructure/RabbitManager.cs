@@ -44,6 +44,15 @@ namespace Solidex.Microservices.RabbitMQ.Infrastructure
         }
 
         /// <inheritdoc />
+        public void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey) where T : class
+        {
+            if (message == null)
+                throw new ArgumentNullException(nameof(message));
+
+            PublishRaw(message, exchangeName, exchangeType, routeKey, CancellationToken.None).GetAwaiter().GetResult();
+        }
+
+        /// <inheritdoc />
         public async Task<TResponse> Send<TRequest, TResponse>(TRequest message, CancellationToken ct = default)
             where TRequest : class
             where TResponse : class
