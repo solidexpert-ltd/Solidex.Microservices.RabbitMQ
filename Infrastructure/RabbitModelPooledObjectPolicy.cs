@@ -21,15 +21,7 @@ namespace Solidex.Microservices.RabbitMQ.Infrastructure
 
         private IConnection GetConnection()
         {
-            var factory = new ConnectionFactory
-            {
-                HostName = _options.Hostname,
-                UserName = _options.UserName,
-                Password = _options.Password,
-                Port = _options.Port > 0 ? _options.Port : AmqpTcpEndpoint.UseDefaultPort,
-                VirtualHost = string.IsNullOrEmpty(_options.VHost) ? "/" : _options.VHost
-            };
-
+            var factory = _options.CreateConnectionFactory();
             return factory.CreateConnectionAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
